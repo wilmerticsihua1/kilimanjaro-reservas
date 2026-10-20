@@ -5,51 +5,57 @@ function CalendarView({ selectedDate, onSelectDate, reservations, onPickSlot }) 
   const days = nextDays(7)
 
   const countAt = (iso, hour) =>
-    reservations.filter(
-      (r) => r.date === iso && r.time === hour && r.status !== 'cancelled'
-    ).length
+    reservations.filter((r) => r.date === iso && r.time === hour && r.status !== 'cancelled').length
 
   return (
-    <section className="card calendar">
-      <div className="card-head">
-        <h2>Disponibilidad por día y horario</h2>
-        <p>Selecciona un horario libre para iniciar una reserva.</p>
-      </div>
+    <section className="card border-0 shadow-sm">
+      <div className="card-body">
+        <div className="mb-3">
+          <h2 className="h5 fw-bold mb-1">Disponibilidad por día y horario</h2>
+          <p className="text-muted small mb-0">Selecciona un horario libre para iniciar una reserva.</p>
+        </div>
 
-      <div className="day-strip" role="tablist" aria-label="Días">
-        {days.map((d) => (
-          <button
-            key={d.iso}
-            type="button"
-            role="tab"
-            aria-selected={selectedDate === d.iso}
-            className={selectedDate === d.iso ? 'day-pill active' : 'day-pill'}
-            onClick={() => onSelectDate(d.iso)}
-          >
-            <span className="day-name">{d.day}</span>
-            <span className="day-num">{d.num}</span>
-            {d.iso === today && <span className="day-tag">hoy</span>}
-          </button>
-        ))}
-      </div>
+        <div className="d-flex gap-2 overflow-auto pb-2 mb-3" role="tablist" aria-label="Días">
+          {days.map((d) => {
+            const active = selectedDate === d.iso
+            return (
+              <button
+                key={d.iso}
+                type="button"
+                role="tab"
+                aria-selected={active}
+                className={`day-pill ${active ? 'day-pill-active' : ''}`}
+                onClick={() => onSelectDate(d.iso)}
+              >
+                <span className="text-uppercase text-muted" style={{ fontSize: '0.66rem' }}>{d.day}</span>
+                <span className="fs-5 fw-bold">{d.num}</span>
+                {d.iso === today && <span className="day-tag">hoy</span>}
+              </button>
+            )
+          })}
+        </div>
 
-      <div className="slot-grid">
-        {HOURS.map((hour) => {
-          const used = countAt(selectedDate, hour)
-          const full = used >= 4
-          return (
-            <button
-              key={hour}
-              type="button"
-              className={full ? 'slot full' : 'slot free'}
-              disabled={full}
-              onClick={() => onPickSlot(selectedDate, hour)}
-            >
-              <span className="slot-time">{hour}</span>
-              <span className="slot-info">{full ? 'Alta demanda' : `${used} reserva(s)`}</span>
-            </button>
-          )
-        })}
+        <div className="row g-2">
+          {HOURS.map((hour) => {
+            const used = countAt(selectedDate, hour)
+            const full = used >= 4
+            return (
+              <div className="col-6 col-sm-4 col-md-3" key={hour}>
+                <button
+                  type="button"
+                  className={`slot-btn w-100 ${full ? 'slot-full' : 'slot-free'}`}
+                  disabled={full}
+                  onClick={() => onPickSlot(selectedDate, hour)}
+                >
+                  <span className="fw-bold">{hour}</span>
+                  <span className={`d-block ${full ? 'text-danger fw-semibold' : 'text-muted'}`} style={{ fontSize: '0.68rem' }}>
+                    {full ? 'Alta demanda' : `${used} reserva(s)`}
+                  </span>
+                </button>
+              </div>
+            )
+          })}
+        </div>
       </div>
     </section>
   )

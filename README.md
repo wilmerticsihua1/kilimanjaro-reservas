@@ -33,8 +33,10 @@ MesaFácil centraliza la operación y **valida automáticamente** los solapamien
 
 - **React 19** (componentes en **JSX** reutilizables)
 - **Vite** (entorno de desarrollo y build)
+- **Bootstrap 5.3** (maquetación responsiva, navbar, formularios y utilidades)
+- **react-router-dom 7** (enrutado de páginas: Inicio y Reservas)
 - **Hooks**: `useState` (estado de reservas y formulario) y `useEffect` (persistencia en `localStorage` y avisos temporales)
-- CSS3 (variables, grid, flexbox)
+- CSS3 (variables de marca y detalles personalizados sobre Bootstrap)
 
 ## 4. Estructura del proyecto
 
@@ -42,12 +44,17 @@ MesaFácil centraliza la operación y **valida automáticamente** los solapamien
 reservas_restaurante/
 ├── index.html
 ├── package.json
+├── public/
+│   └── img/                         # Imágenes del restaurante (hero, galería)
 └── src/
-    ├── main.jsx                     # Punto de entrada
-    ├── App.jsx                      # Composición y estado de la vista
-    ├── index.css / App.css          # Estilos globales y de componentes
+    ├── main.jsx                     # Punto de entrada + BrowserRouter
+    ├── App.jsx                      # Layout, cabecera, rutas y pie
+    ├── index.css                    # Bootstrap + estilos de marca
+    ├── pages/
+    │   ├── Inicio.jsx               # Landing con hero e imágenes de restaurante
+    │   └── Calendario.jsx           # Vista de reservas (calendario + formulario + listado)
     ├── components/
-    │   ├── Header.jsx               # Encabezado + pestañas + resumen
+    │   ├── Header.jsx               # Navbar Bootstrap con enlaces del router
     │   ├── CalendarView.jsx         # Calendario interactivo de disponibilidad
     │   ├── ReservationForm.jsx      # Formulario reutilizable de reserva
     │   └── ReservationList.jsx      # Listado y gestión de reservas
@@ -103,6 +110,7 @@ npm run lint       # oxlint: 0 errores
 
 ## 6. Cómo probar la aplicación
 
+0. En la página de **Inicio** explora las secciones con imágenes del restaurante y pulsa **Reservar una mesa** para ir al módulo de reservas.
 1. En el **calendario**, haz clic en cualquier **horario libre** (ej. 19:00). El formulario se completa con esa fecha y hora.
 2. Ingresa **nombre** y **teléfono** válidos, elige el número de **personas** y una **mesa** sugerida.
 3. Pulsa **Confirmar reserva** → aparece un aviso de éxito y la reserva en el listado.

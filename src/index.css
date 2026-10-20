@@ -1,30 +1,135 @@
 :root {
-  --brand: #c2410c;
-  --brand-strong: #9a3412;
-  --brand-soft: #ffedd5;
-  --accent: #f59e0b;
-  --accent-strong: #b45309;
-  --danger: #b91c1c;
-  --text: #1f2937;
-  --muted: #6b7280;
-  --surface: #ffffff;
-  --surface-2: #faf7f4;
-  --border: #ece4dc;
-  --shadow: 0 4px 16px rgba(120, 80, 40, 0.08);
-
-  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  color: var(--text);
-  background: #f7f2ec;
-  -webkit-font-smoothing: antialiased;
+  --mf-brand: #c2410c;
+  --mf-brand-strong: #9a3412;
+  --mf-brand-soft: #ffedd5;
+  --mf-accent: #f59e0b;
 }
 
-* { box-sizing: border-box; }
+body {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background: #f7f2ec;
+}
 
-body { margin: 0; background: #f7f2ec; }
+/* Marca */
+.bg-brand { background: linear-gradient(135deg, var(--mf-brand-strong), var(--mf-brand)) !important; }
+.text-brand { color: var(--mf-brand-strong) !important; }
+.text-bg-brand { background-color: var(--mf-brand) !important; color: #fff !important; }
 
-h1, h2, h3 { line-height: 1.25; }
+.btn-brand {
+  background-color: var(--mf-brand);
+  border-color: var(--mf-brand);
+  color: #fff;
+}
+.btn-brand:hover,
+.btn-brand:focus {
+  background-color: var(--mf-brand-strong);
+  border-color: var(--mf-brand-strong);
+  color: #fff;
+}
+.btn-brand:disabled { opacity: 0.55; }
 
-button { font-family: inherit; }
+/* Hero */
+.hero-inicio {
+  background-image: url('/img/hero.jpg');
+  background-size: cover;
+  background-position: center;
+}
+.hero-overlay {
+  background: linear-gradient(120deg, rgba(29, 20, 12, 0.85), rgba(154, 52, 18, 0.65));
+}
 
-:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+.dot-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--mf-brand-soft);
+  flex-shrink: 0;
+}
+
+.galeria-img { height: 200px; object-fit: cover; }
+
+/* Calendario: franja de días */
+.day-pill {
+  position: relative;
+  min-width: 62px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+  border: 1px solid #e6ddd4;
+  background: #faf7f4;
+  border-radius: 12px;
+  padding: 0.5rem 0.5rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.day-pill:hover { border-color: var(--mf-brand); }
+.day-pill-active {
+  border-color: var(--mf-brand);
+  background: var(--mf-brand-soft);
+  box-shadow: 0 0 0 2px var(--mf-brand-soft);
+}
+.day-tag {
+  position: absolute;
+  top: -7px;
+  right: -6px;
+  background: var(--mf-accent);
+  color: #fff;
+  font-size: 0.56rem;
+  padding: 1px 5px;
+  border-radius: 6px;
+}
+
+/* Calendario: slots */
+.slot-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.1rem;
+  border: 1px solid #e6ddd4;
+  border-radius: 11px;
+  padding: 0.5rem 0.7rem;
+  background: #fff;
+  cursor: pointer;
+  transition: transform 0.12s, box-shadow 0.12s, border-color 0.12s;
+}
+.slot-free:hover {
+  transform: translateY(-2px);
+  border-color: var(--mf-brand);
+  box-shadow: 0 4px 16px rgba(120, 80, 40, 0.12);
+}
+.slot-full {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: repeating-linear-gradient(45deg, #fdecec, #fdecec 6px, #fbe2e2 6px, #fbe2e2 12px);
+}
+
+/* Formulario: chips de mesa */
+.table-chip {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e6ddd4;
+  border-radius: 11px;
+  padding: 0.5rem 0.65rem;
+  cursor: pointer;
+  background: #faf7f4;
+  transition: all 0.15s;
+}
+.table-chip input { position: absolute; opacity: 0; pointer-events: none; }
+.table-chip-active {
+  border-color: var(--mf-brand);
+  background: var(--mf-brand-soft);
+  box-shadow: 0 0 0 2px var(--mf-brand-soft);
+}
+
+/* Lista de reservas */
+.res-time { background: var(--mf-brand-soft); min-width: 70px; }
+.reservation.status-confirmed { border-color: var(--mf-brand) !important; }
+.reservation.status-seated { border-color: var(--mf-accent) !important; background: #fffbeb; }
+.reservation.status-cancelled { border-color: #9ca3af !important; opacity: 0.7; }
+.reservation.status-completed { border-color: #7dd3a0 !important; opacity: 0.85; }
+
+:focus-visible { outline: 2px solid var(--mf-brand); outline-offset: 2px; }

@@ -1,38 +1,54 @@
-function Header({ view, onChangeView, stats }) {
+import { useState } from 'react'
+import { NavLink } from 'react-router-dom'
+
+function Header({ statsToday }) {
+  const [open, setOpen] = useState(false)
+
+  const linkClass = ({ isActive }) => (isActive ? 'nav-link active fw-semibold' : 'nav-link')
+
   return (
-    <header className="app-header">
-      <div className="brand">
-        <span className="brand-logo" aria-hidden="true">🍽️</span>
-        <div>
-          <h1>MesaFácil</h1>
-          <p>Gestión de reservas para restaurantes</p>
+    <nav className="navbar navbar-expand-lg navbar-dark bg-brand shadow-sm sticky-top">
+      <div className="container">
+        <NavLink to="/" className="navbar-brand d-flex align-items-center gap-2">
+          <span className="fs-3" aria-hidden="true">🍽️</span>
+          <span className="d-flex flex-column lh-1">
+            <span className="fw-bold">MesaFácil</span>
+            <small className="opacity-75" style={{ fontSize: '0.68rem' }}>Reservas de restaurante</small>
+          </span>
+        </NavLink>
+
+        <button
+          className="navbar-toggler"
+          type="button"
+          aria-controls="mainNav"
+          aria-expanded={open}
+          aria-label="Alternar navegación"
+          onClick={() => setOpen((v) => !v)}
+        >
+          <span className="navbar-toggler-icon" />
+        </button>
+
+        <div className={`collapse navbar-collapse ${open ? 'show' : ''}`} id="mainNav">
+          <ul className="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+            <li className="nav-item">
+              <NavLink to="/" className={linkClass} end onClick={() => setOpen(false)}>
+                Inicio
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink to="/reservas" className={linkClass} onClick={() => setOpen(false)}>
+                Reservas
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <span className="badge rounded-pill text-bg-warning text-dark ms-lg-2">
+                {statsToday} hoy
+              </span>
+            </li>
+          </ul>
         </div>
       </div>
-
-      <nav className="tabs" aria-label="Secciones">
-        <button
-          type="button"
-          className={view === 'calendar' ? 'tab active' : 'tab'}
-          aria-current={view === 'calendar'}
-          onClick={() => onChangeView('calendar')}
-        >
-          Calendario
-        </button>
-        <button
-          type="button"
-          className={view === 'admin' ? 'tab active' : 'tab'}
-          aria-current={view === 'admin'}
-          onClick={() => onChangeView('admin')}
-        >
-          Mis reservas
-        </button>
-      </nav>
-
-      <div className="header-stats" aria-label="Resumen del día">
-        <span className="stat"><strong>{stats.today}</strong> hoy</span>
-        <span className="stat"><strong>{stats.confirmed}</strong> confirmadas</span>
-      </div>
-    </header>
+    </nav>
   )
 }
 

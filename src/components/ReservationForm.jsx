@@ -57,114 +57,132 @@ export function ReservationForm({ initialDate, initialTime, reservations, onAdd,
   const fieldError = (name) => (touched ? errors[name] : null)
 
   return (
-    <section className="card form-card" aria-labelledby="form-title">
-      <div className="card-head">
-        <h2 id="form-title">{editing ? 'Editar reserva' : 'Nueva reserva'}</h2>
-        <p>{formatDateLong(draft.date)} · {draft.time} → {addMinutes(draft.time, draft.duration)}</p>
+    <section className="card border-0 shadow-sm" aria-labelledby="form-title">
+      <div className="card-body">
+        <div className="mb-3">
+          <h2 id="form-title" className="h5 fw-bold mb-1">{editing ? 'Editar reserva' : 'Nueva reserva'}</h2>
+          <p className="text-muted small mb-0">
+            {formatDateLong(draft.date)} · {draft.time} → {addMinutes(draft.time, draft.duration)}
+          </p>
+        </div>
+
+        {error && <div className="alert alert-danger py-2 small" role="alert">{error}</div>}
+
+        <form onSubmit={handleSubmit} noValidate>
+          <div className="mb-3">
+            <label htmlFor="clientName" className="form-label small fw-semibold">Nombre del cliente *</label>
+            <input
+              id="clientName"
+              className={`form-control ${fieldError('clientName') ? 'is-invalid' : ''}`}
+              value={draft.clientName}
+              onChange={update('clientName')}
+              placeholder="Ej. María López"
+              aria-invalid={Boolean(fieldError('clientName'))}
+            />
+            {fieldError('clientName') && <div className="invalid-feedback">{fieldError('clientName')}</div>}
+          </div>
+
+          <div className="row g-2 mb-3">
+            <div className="col-6">
+              <label htmlFor="clientPhone" className="form-label small fw-semibold">Teléfono *</label>
+              <input
+                id="clientPhone"
+                className={`form-control ${fieldError('clientPhone') ? 'is-invalid' : ''}`}
+                value={draft.clientPhone}
+                onChange={update('clientPhone')}
+                placeholder="987654321"
+                inputMode="tel"
+                aria-invalid={Boolean(fieldError('clientPhone'))}
+              />
+              {fieldError('clientPhone') && <div className="invalid-feedback">{fieldError('clientPhone')}</div>}
+            </div>
+            <div className="col-6">
+              <label htmlFor="guests" className="form-label small fw-semibold">Personas *</label>
+              <input
+                id="guests"
+                type="number"
+                min="1"
+                max="12"
+                className="form-control"
+                value={draft.guests}
+                onChange={update('guests')}
+              />
+            </div>
+          </div>
+
+          <div className="row g-2 mb-3">
+            <div className="col-6">
+              <label htmlFor="date" className="form-label small fw-semibold">Fecha *</label>
+              <input
+                id="date"
+                type="date"
+                className={`form-control ${fieldError('date') ? 'is-invalid' : ''}`}
+                value={draft.date}
+                min={todayISO()}
+                onChange={update('date')}
+                aria-invalid={Boolean(fieldError('date'))}
+              />
+            </div>
+            <div className="col-6">
+              <label htmlFor="time" className="form-label small fw-semibold">Hora *</label>
+              <select
+                id="time"
+                className={`form-select ${fieldError('time') ? 'is-invalid' : ''}`}
+                value={draft.time}
+                onChange={update('time')}
+                aria-invalid={Boolean(fieldError('time'))}
+              >
+                {HOURS.map((h) => (
+                  <option key={h} value={h}>{h}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div className="mb-3">
+            <span className="form-label small fw-semibold d-block">Mesa sugerida *</span>
+            <div className="row g-2" role="radiogroup" aria-label="Mesa">
+              {tables.length === 0 && (
+                <p className="text-danger small fw-semibold mb-0">No hay mesas libres para {draft.guests} personas a esa hora.</p>
+              )}
+              {tables.map((t) => {
+                const active = selectedTableId === t.id
+                return (
+                  <div className="col-6" key={t.id}>
+                    <label className={`table-chip w-100 ${active ? 'table-chip-active' : ''}`}>
+                      <input
+                        type="radio"
+                        name="table"
+                        value={t.id}
+                        checked={active}
+                        onChange={update('tableId')}
+                      />
+                      <span className="fw-semibold small">Mesa {t.id}</span>
+                      <small className="text-muted">{t.capacity} pers · {t.zone}</small>
+                    </label>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+
+          <div className="mb-3">
+            <label htmlFor="notes" className="form-label small fw-semibold">Notas (opcional)</label>
+            <textarea
+              id="notes"
+              rows="2"
+              className="form-control"
+              value={draft.notes}
+              onChange={update('notes')}
+              placeholder="Alergias, ocasión especial, ubicación preferida…"
+            />
+          </div>
+
+          <button type="submit" className="btn btn-brand w-100 fw-semibold" disabled={tables.length === 0}>
+            {editing ? 'Guardar cambios' : 'Confirmar reserva'}
+          </button>
+        </form>
       </div>
-
-      {error && <div className="alert error" role="alert">{error}</div>}
-
-      <form onSubmit={handleSubmit} noValidate>
-        <div className="field">
-          <label htmlFor="clientName">Nombre del cliente *</label>
-          <input
-            id="clientName"
-            value={draft.clientName}
-            onChange={update('clientName')}
-            placeholder="Ej. María López"
-            aria-invalid={Boolean(fieldError('clientName'))}
-          />
-          {fieldError('clientName') && <span className="hint error-text">{fieldError('clientName')}</span>}
-        </div>
-
-        <div className="field-row">
-          <div className="field">
-            <label htmlFor="clientPhone">Teléfono *</label>
-            <input
-              id="clientPhone"
-              value={draft.clientPhone}
-              onChange={update('clientPhone')}
-              placeholder="987654321"
-              inputMode="tel"
-              aria-invalid={Boolean(fieldError('clientPhone'))}
-            />
-            {fieldError('clientPhone') && <span className="hint error-text">{fieldError('clientPhone')}</span>}
-          </div>
-
-          <div className="field">
-            <label htmlFor="guests">Personas *</label>
-            <input
-              id="guests"
-              type="number"
-              min="1"
-              max="12"
-              value={draft.guests}
-              onChange={update('guests')}
-            />
-          </div>
-        </div>
-
-        <div className="field-row">
-          <div className="field">
-            <label htmlFor="date">Fecha *</label>
-            <input
-              id="date"
-              type="date"
-              value={draft.date}
-              min={todayISO()}
-              onChange={update('date')}
-              aria-invalid={Boolean(fieldError('date'))}
-            />
-          </div>
-
-          <div className="field">
-            <label htmlFor="time">Hora *</label>
-            <select id="time" value={draft.time} onChange={update('time')} aria-invalid={Boolean(fieldError('time'))}>
-              {HOURS.map((h) => (
-                <option key={h} value={h}>{h}</option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        <div className="field">
-          <span className="label-text">Mesa sugerida *</span>
-          <div className="table-options" role="radiogroup" aria-label="Mesa">
-            {tables.length === 0 && (
-              <p className="hint error-text">No hay mesas libres para {draft.guests} personas a esa hora.</p>
-            )}
-            {tables.map((t) => (
-              <label key={t.id} className={selectedTableId === t.id ? 'table-chip active' : 'table-chip'}>
-                <input
-                  type="radio"
-                  name="table"
-                  value={t.id}
-                  checked={selectedTableId === t.id}
-                  onChange={update('tableId')}
-                />
-                <span>Mesa {t.id}</span>
-                <small>{t.capacity} pers · {t.zone}</small>
-              </label>
-            ))}
-          </div>
-        </div>
-
-        <div className="field">
-          <label htmlFor="notes">Notas (opcional)</label>
-          <textarea
-            id="notes"
-            rows="2"
-            value={draft.notes}
-            onChange={update('notes')}
-            placeholder="Alergias, ocasión especial, ubicación preferida…"
-          />
-        </div>
-
-        <button type="submit" className="btn primary" disabled={tables.length === 0}>
-          {editing ? 'Guardar cambios' : 'Confirmar reserva'}
-        </button>
-      </form>
     </section>
   )
 }
