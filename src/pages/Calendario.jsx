@@ -2,13 +2,14 @@ import { useMemo, useState } from 'react'
 import CalendarView from '../components/CalendarView'
 import ReservationForm from '../components/ReservationForm'
 import ReservationList from '../components/ReservationList'
-import { findConflict, todayISO } from '../data/reservationLogic'
+import { todayISO } from '../data/reservationLogic'
 
 function Calendario({
   reservations,
   error,
   setError,
   addReservation,
+  updateReservation,
   cancelReservation,
   setStatus,
   removeReservation,
@@ -31,6 +32,8 @@ function Calendario({
   const handleAdd = (draft) => {
     const result = addReservation(draft)
     if (result.ok) {
+      setSelectedDate(result.reservation.date)
+      setSelectedTime(result.reservation.time)
       setToast(`Reserva confirmada: ${result.reservation.clientName} · Mesa ${result.reservation.tableId} · ${result.reservation.time}`)
       setEditing(null)
     }
@@ -38,15 +41,10 @@ function Calendario({
   }
 
   const handleUpdate = (draft) => {
-    const conflict = findConflict(reservations, draft, editing.id)
-    if (conflict) {
-      setError(`Conflicto: la mesa ${draft.tableId} ya está ocupada a las ${conflict.time}.`)
-      return { ok: false }
-    }
-    setStatus(editing.id, editing.status)
-    removeReservation(editing.id)
-    const result = addReservation(draft)
+    const result = updateReservation(editing.id, draft)
     if (result.ok) {
+      setSelectedDate(result.reservation.date)
+      setSelectedTime(result.reservation.time)
       setToast('Reserva actualizada correctamente')
       setEditing(null)
     }
@@ -93,7 +91,7 @@ function Calendario({
       </ul>
 
       <div className="row g-4">
-        <div className="col-lg-8 d-flex flex-column gap-4">
+        <div className="col-lg-8 order-2 order-lg-1 d-flex flex-column gap-4">
           <CalendarView
             selectedDate={selectedDate}
             onSelectDate={(d) => {
@@ -105,7 +103,7 @@ function Calendario({
           />
 
           <div className="d-flex justify-content-center gap-3 text-muted small">
-            <span><strong>{stats.today}</strong> hoy</span>
+            <span><strong>{stats.today}</strong> reservas ese día</span>
             <span><strong>{stats.confirmed}</strong> confirmadas</span>
           </div>
 
@@ -128,7 +126,7 @@ function Calendario({
           />
         </div>
 
-        <div className="col-lg-4 d-flex flex-column gap-4">
+        <div className="col-lg-4 order-1 order-lg-2 d-flex flex-column gap-4">
           <ReservationForm
             key={editing ? `edit-${editing.id}` : `${selectedDate}-${selectedTime}`}
             initialDate={selectedDate}

@@ -58,10 +58,10 @@ export const isDuplicate = (reservations, draft, excludeId = null) => {
   )
 }
 
-export const availableTables = (reservations, date, time, duration = DURATION_MINUTES, guests = 1) => {
+export const availableTables = (reservations, date, time, duration = DURATION_MINUTES, guests = 1, excludeId = null) => {
   return tables.filter(
     (t) =>
-      t.capacity >= guests && !findConflict(reservations, { date, time, tableId: t.id, duration })
+      t.capacity >= guests && !findConflict(reservations, { date, time, tableId: t.id, duration }, excludeId)
   )
 }
 

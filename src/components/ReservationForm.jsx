@@ -17,8 +17,8 @@ export function ReservationForm({ initialDate, initialTime, reservations, onAdd,
   const [touched, setTouched] = useState(false)
 
   const tables = useMemo(
-    () => availableTables(reservations, draft.date, draft.time, draft.duration, Number(draft.guests) || 1),
-    [reservations, draft.date, draft.time, draft.duration, draft.guests]
+    () => availableTables(reservations, draft.date, draft.time, draft.duration, Number(draft.guests) || 1, editing?.id),
+    [reservations, draft.date, draft.time, draft.duration, draft.guests, editing]
   )
 
   const selectedTableId = useMemo(() => {

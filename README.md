@@ -1,4 +1,4 @@
-# MesaFácil — Gestión de reservas para restaurantes
+# KILIMANJARO — Gestión de reservas para restaurantes
 
 Aplicación web **prototipada y funcional** desarrollada con **React + Vite** que permite a un restaurante **registrar reservas de mesas de forma centralizada**, **evitar duplicaciones y conflictos de horario**, y **visualizar la ocupación en un calendario interactivo**. Diseñada con enfoque *mobile-first* y accesible desde escritorio.
 
@@ -14,7 +14,7 @@ Los restaurantes gestionan reservas por teléfono o en persona, lo que provoca:
 - **Conflictos de horario** y desorganización en horas de alta demanda.
 - Mala experiencia del cliente por falta de confirmación en tiempo real.
 
-MesaFácil centraliza la operación y **valida automáticamente** los solapamientos antes de confirmar una reserva.
+KILIMANJARO centraliza la operación y **valida automáticamente** los solapamientos antes de confirmar una reserva.
 
 ## 2. Funcionalidades principales
 

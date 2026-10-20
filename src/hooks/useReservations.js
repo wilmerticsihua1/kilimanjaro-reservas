@@ -7,7 +7,10 @@ const STORAGE_KEY = 'restaurant-reservations-v1'
 const loadInitial = () => {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
-    if (raw) return JSON.parse(raw)
+    if (raw) {
+      const parsed = JSON.parse(raw)
+      if (Array.isArray(parsed)) return parsed
+    }
   } catch {
     localStorage.removeItem(STORAGE_KEY)
   }
@@ -38,6 +41,24 @@ export function useReservations() {
     return { ok: true, reservation: created }
   }
 
+  const updateReservation = (id, draft) => {
+    if (isDuplicate(reservations, draft, id)) {
+      setError('Ya existe otra reserva con el mismo nombre, teléfono, fecha y hora.')
+      return { ok: false, reason: 'duplicate' }
+    }
+    const conflict = findConflict(reservations, draft, id)
+    if (conflict) {
+      setError(`La mesa ${draft.tableId} ya está reservada a las ${conflict.time} para ${conflict.clientName}. Elija otra mesa u horario.`)
+      return { ok: false, reason: 'conflict' }
+    }
+    const existing = reservations.find((r) => r.id === id)
+    if (!existing) return { ok: false, reason: 'not-found' }
+    const updated = { ...existing, ...draft, id, status: existing.status }
+    setReservations((prev) => prev.map((r) => (r.id === id ? updated : r)))
+    setError(null)
+    return { ok: true, reservation: updated }
+  }
+
   const cancelReservation = (id) => {
     setReservations((prev) => prev.map((r) => (r.id === id ? { ...r, status: 'cancelled' } : r)))
   }
@@ -55,5 +76,5 @@ export function useReservations() {
     setError(null)
   }
 
-  return { reservations, error, setError, addReservation, cancelReservation, setStatus, removeReservation, resetDemo }
+  return { reservations, error, setError, addReservation, updateReservation, cancelReservation, setStatus, removeReservation, resetDemo }
 }

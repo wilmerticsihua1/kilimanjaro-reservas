@@ -14,7 +14,7 @@ function Inicio() {
         <div className="hero-overlay">
           <div className="container py-5">
             <span className="badge bg-warning text-dark mb-3">Reservas en línea</span>
-            <h1 className="display-4 fw-bold">Bienvenido a MesaFácil</h1>
+            <h1 className="display-4 fw-bold">Bienvenido a KILIMANJARO</h1>
             <p className="lead col-lg-7">
               Reserva tu mesa de forma rápida y sin llamadas. Consulta la disponibilidad
               por día y horario, elige la mesa según tu número de personas y recibe
@@ -37,7 +37,7 @@ function Inicio() {
           <div className="col-lg-6">
             <h2 className="fw-bold mb-3">Nuestro restaurante</h2>
             <p className="text-muted">
-              En MesaFácil combinamos una cocina de temporada con un servicio que
+              En KILIMANJARO combinamos una cocina de temporada con un servicio que
               cuida cada detalle. Nuestro sistema de reservas evita duplicados y
               conflictos de horario para que disfrutes sin contratiempos.
             </p>
@@ -61,7 +61,7 @@ function Inicio() {
             </ul>
           </div>
           <div className="col-lg-6">
-            <img src="/img/hero.jpg" alt="Interior del restaurante MesaFácil" className="img-fluid rounded-4 shadow-sm" loading="lazy" />
+            <img src="/img/hero.jpg" alt="Interior del restaurante Kilimanjaro" className="img-fluid rounded-4 shadow-sm" loading="lazy" />
           </div>
         </div>
       </section>

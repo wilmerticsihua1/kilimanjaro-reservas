@@ -49,9 +49,14 @@ export const seedReservations = [
   },
 ]
 
+const newId = () =>
+  typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+    ? crypto.randomUUID()
+    : `r-${Date.now()}-${Math.random().toString(16).slice(2)}`
+
 export const makeReservation = (draft) => ({
   ...draft,
-  id: crypto.randomUUID(),
+  id: newId(),
   duration: draft.duration ?? 90,
   status: 'confirmed',
   createdAt: Date.now(),
