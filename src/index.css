@@ -1,0 +1,30 @@
+:root {
+  --brand: #c2410c;
+  --brand-strong: #9a3412;
+  --brand-soft: #ffedd5;
+  --accent: #f59e0b;
+  --accent-strong: #b45309;
+  --danger: #b91c1c;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --surface: #ffffff;
+  --surface-2: #faf7f4;
+  --border: #ece4dc;
+  --shadow: 0 4px 16px rgba(120, 80, 40, 0.08);
+
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  color: var(--text);
+  background: #f7f2ec;
+  -webkit-font-smoothing: antialiased;
+}
+
+* { box-sizing: border-box; }
+
+body { margin: 0; background: #f7f2ec; }
+
+h1, h2, h3 { line-height: 1.25; }
+
+button { font-family: inherit; }
+
+:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
