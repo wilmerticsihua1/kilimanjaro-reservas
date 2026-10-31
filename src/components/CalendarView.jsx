@@ -1,6 +1,6 @@
 import { HOURS, todayISO, nextDays } from '../data/reservationLogic'
 
-function CalendarView({ selectedDate, onSelectDate, reservations, onPickSlot }) {
+function CalendarView({ selectedDate, onSelectDate, reservations, onPickSlot, publico = false }) {
   const today = todayISO()
   const days = nextDays(7)
 
@@ -12,7 +12,7 @@ function CalendarView({ selectedDate, onSelectDate, reservations, onPickSlot }) 
       <div className="card-body">
         <div className="mb-3">
           <h2 className="h5 fw-bold mb-1">Disponibilidad por día y horario</h2>
-          <p className="text-muted small mb-0">Selecciona un horario libre para iniciar una reserva.</p>
+          <p className="text-muted small mb-0">Selecciona un horario libre para completar los datos de la reserva.</p>
         </div>
 
         <div className="d-flex gap-2 overflow-auto pb-2 mb-3" role="tablist" aria-label="Días">
@@ -49,7 +49,7 @@ function CalendarView({ selectedDate, onSelectDate, reservations, onPickSlot }) 
                 >
                   <span className="fw-bold">{hour}</span>
                   <span className={`d-block ${full ? 'text-danger fw-semibold' : 'text-muted'}`} style={{ fontSize: '0.68rem' }}>
-                    {full ? 'Alta demanda' : `${used} reserva(s)`}
+                    {full ? 'Alta demanda' : publico ? 'Disponible' : `${used} reserva(s)`}
                   </span>
                 </button>
               </div>

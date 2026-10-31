@@ -1,24 +1,27 @@
 import { useMemo, useState } from 'react'
 import { HOURS, DURATION_MINUTES, addMinutes, availableTables, formatDateLong, todayISO } from '../data/reservationLogic'
 
-const emptyDraft = (date, time) => ({
+const emptyDraft = (date, time, extra = {}) => ({
   clientName: '',
   clientPhone: '',
+  clientEmail: '',
   date,
   time,
   guests: 2,
   tableId: '',
   notes: '',
   duration: DURATION_MINUTES,
+  ...extra,
 })
 
-export function ReservationForm({ initialDate, initialTime, reservations, onAdd, error, onClearError, editing, onUpdate }) {
-  const [draft, setDraft] = useState(() => (editing ? { ...editing } : emptyDraft(initialDate, initialTime)))
+export function ReservationForm({ mesas, initialDate, initialTime, reservations, onAdd, error, onClearError, editing, onUpdate, publico = false, datosIniciales = {} }) {
+  // datosIniciales: datos del cliente que inició sesión y la mesa que eligió
+  const [draft, setDraft] = useState(() => (editing ? { ...editing } : emptyDraft(initialDate, initialTime, datosIniciales)))
   const [touched, setTouched] = useState(false)
 
   const tables = useMemo(
-    () => availableTables(reservations, draft.date, draft.time, draft.duration, Number(draft.guests) || 1, editing?.id),
-    [reservations, draft.date, draft.time, draft.duration, draft.guests, editing]
+    () => availableTables(reservations, draft.date, draft.time, draft.duration, Number(draft.guests) || 1, editing?.id, mesas),
+    [reservations, mesas, draft.date, draft.time, draft.duration, draft.guests, editing]
   )
 
   const selectedTableId = useMemo(() => {
@@ -29,7 +32,8 @@ export function ReservationForm({ initialDate, initialTime, reservations, onAdd,
   const errors = useMemo(() => {
     const e = {}
     if (!draft.clientName.trim()) e.clientName = 'Ingrese el nombre del cliente'
-    if (!/^[0-9+\s-]{6,}$/.test(draft.clientPhone.trim())) e.clientPhone = 'Teléfono inválido'
+    if (!/^[0-9+\s-]{6,}$/.test(draft.clientPhone.trim())) e.clientPhone = 'Ingrese un teléfono válido (ej. 987654321)'
+    if ((draft.clientEmail ?? '').trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(draft.clientEmail.trim())) e.clientEmail = 'Correo no válido'
     if (!draft.date) e.date = 'Seleccione una fecha'
     if (!draft.time) e.time = 'Seleccione un horario'
     if (!selectedTableId) e.tableId = 'No hay mesas disponibles para esa capacidad'
@@ -60,7 +64,7 @@ export function ReservationForm({ initialDate, initialTime, reservations, onAdd,
     <section className="card border-0 shadow-sm" aria-labelledby="form-title">
       <div className="card-body">
         <div className="mb-3">
-          <h2 id="form-title" className="h5 fw-bold mb-1">{editing ? 'Editar reserva' : 'Nueva reserva'}</h2>
+          <h2 id="form-title" className="h5 fw-bold mb-1">{editing ? 'Editar reserva' : publico ? 'Registra tu reserva' : 'Registrar reserva'}</h2>
           <p className="text-muted small mb-0">
             {formatDateLong(draft.date)} · {draft.time} → {addMinutes(draft.time, draft.duration)}
           </p>
@@ -70,13 +74,14 @@ export function ReservationForm({ initialDate, initialTime, reservations, onAdd,
 
         <form onSubmit={handleSubmit} noValidate>
           <div className="mb-3">
-            <label htmlFor="clientName" className="form-label small fw-semibold">Nombre del cliente *</label>
+            <label htmlFor="clientName" className="form-label small fw-semibold">{publico ? 'Nombre completo *' : 'Nombre del cliente *'}</label>
             <input
               id="clientName"
               className={`form-control ${fieldError('clientName') ? 'is-invalid' : ''}`}
               value={draft.clientName}
               onChange={update('clientName')}
               placeholder="Ej. María López"
+              autoComplete="name"
               aria-invalid={Boolean(fieldError('clientName'))}
             />
             {fieldError('clientName') && <div className="invalid-feedback">{fieldError('clientName')}</div>}
@@ -92,6 +97,7 @@ export function ReservationForm({ initialDate, initialTime, reservations, onAdd,
                 onChange={update('clientPhone')}
                 placeholder="987654321"
                 inputMode="tel"
+                autoComplete="tel"
                 aria-invalid={Boolean(fieldError('clientPhone'))}
               />
               {fieldError('clientPhone') && <div className="invalid-feedback">{fieldError('clientPhone')}</div>}
@@ -108,6 +114,20 @@ export function ReservationForm({ initialDate, initialTime, reservations, onAdd,
                 onChange={update('guests')}
               />
             </div>
+          </div>
+
+          <div className="mb-3">
+            <label htmlFor="clientEmail" className="form-label small fw-semibold">Correo electrónico (opcional)</label>
+            <input
+              id="clientEmail"
+              type="email"
+              className={`form-control ${fieldError('clientEmail') ? 'is-invalid' : ''}`}
+              value={draft.clientEmail ?? ''}
+              onChange={update('clientEmail')}
+              placeholder="tucorreo@ejemplo.com"
+              autoComplete="email"
+            />
+            {fieldError('clientEmail') && <div className="invalid-feedback">{fieldError('clientEmail')}</div>}
           </div>
 
           <div className="row g-2 mb-3">
@@ -140,7 +160,7 @@ export function ReservationForm({ initialDate, initialTime, reservations, onAdd,
           </div>
 
           <div className="mb-3">
-            <span className="form-label small fw-semibold d-block">Mesa sugerida *</span>
+            <span className="form-label small fw-semibold d-block">{publico ? 'Mesa preferida *' : 'Mesa *'}</span>
             <div className="row g-2" role="radiogroup" aria-label="Mesa">
               {tables.length === 0 && (
                 <p className="text-danger small fw-semibold mb-0">No hay mesas libres para {draft.guests} personas a esa hora.</p>
@@ -179,7 +199,7 @@ export function ReservationForm({ initialDate, initialTime, reservations, onAdd,
           </div>
 
           <button type="submit" className="btn btn-brand w-100 fw-semibold" disabled={tables.length === 0}>
-            {editing ? 'Guardar cambios' : 'Confirmar reserva'}
+            {editing ? 'Guardar cambios' : publico ? 'Registrar mi reserva' : 'Registrar reserva'}
           </button>
         </form>
       </div>

@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom'
-import { tables } from '../data/reservationLogic'
 
 const galeria = [
   { src: '/img/ambiente.jpg', titulo: 'Ambiente cálido', texto: 'Salón principal con iluminación cálida y servicio atento.' },
@@ -7,7 +6,7 @@ const galeria = [
   { src: '/img/plato3.jpg', titulo: 'Cocina de autor', texto: 'Platos de temporada preparados por nuestro equipo.' },
 ]
 
-function Inicio() {
+function Inicio({ mesas: tables = [] }) {
   return (
     <>
       <section className="hero-inicio text-white">
@@ -21,11 +20,11 @@ function Inicio() {
               confirmación al instante.
             </p>
             <div className="d-flex flex-wrap gap-3">
-              <Link to="/reservas" className="btn btn-warning btn-lg fw-semibold">
+              <Link to="/reservar" className="btn btn-warning btn-lg fw-semibold">
                 Reservar una mesa
               </Link>
-              <Link to="/reservas" className="btn btn-outline-light btn-lg">
-                Ver disponibilidad
+              <Link to="/menu" className="btn btn-outline-light btn-lg">
+                Ver nuestro menú
               </Link>
             </div>
           </div>
@@ -61,7 +60,7 @@ function Inicio() {
             </ul>
           </div>
           <div className="col-lg-6">
-            <img src="/img/hero.jpg" alt="Interior del restaurante Kilimanjaro" className="img-fluid rounded-4 shadow-sm" loading="lazy" />
+            <img src="/img/hero.jpg" alt="Interior del restaurante Kilimanjaro" className="img-fluid rounded-4 shadow-sm w-100 galeria-img" loading="lazy" />
           </div>
         </div>
       </section>
@@ -70,7 +69,7 @@ function Inicio() {
         <h2 className="fw-bold mb-4 text-center">Conoce nuestro espacio</h2>
         <div className="row g-4">
           {galeria.map((g) => (
-            <div className="col-md-4" key={g.titulo}>
+            <div className="col-6 col-md-4" key={g.titulo}>
               <div className="card h-100 border-0 shadow-sm">
                 <img src={g.src} className="card-img-top galeria-img" alt={g.titulo} loading="lazy" />
                 <div className="card-body">
@@ -104,7 +103,7 @@ function Inicio() {
         <div className="container py-5 text-center">
           <h2 className="fw-bold">¿Listo para reservar?</h2>
           <p className="text-white-50 mb-4">Tu mesa te espera. Confirma en segundos.</p>
-          <Link to="/reservas" className="btn btn-warning btn-lg fw-semibold">
+          <Link to="/reservar" className="btn btn-warning btn-lg fw-semibold">
             Ir al calendario de reservas
           </Link>
         </div>

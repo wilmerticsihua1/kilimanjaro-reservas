@@ -44,7 +44,7 @@ export default function Nosotros() {
         <div className="col-md-4 mb-4">
           <img
             src="/img/ambiente.jpg"
-            className="img-fluid rounded shadow-sm"
+            className="img-fluid rounded shadow-sm w-100 galeria-img"
             alt="Objetivo del restaurante"
           />
           <h4 className="text-center mt-3">Objetivo</h4>
@@ -63,7 +63,7 @@ export default function Nosotros() {
         <div className="col-md-4 mb-4">
           <img
             src="/img/terraza.jpg"
-            className="img-fluid rounded shadow-sm"
+            className="img-fluid rounded shadow-sm w-100 galeria-img"
             alt="Misión del restaurante"
           />
           <h4 className="text-center mt-3">Misión</h4>
@@ -81,7 +81,7 @@ export default function Nosotros() {
         <div className="col-md-4 mb-4">
           <img
             src="/img/plato3.jpg"
-            className="img-fluid rounded shadow-sm"
+            className="img-fluid rounded shadow-sm w-100 galeria-img"
             alt="Visión del restaurante"
           />
           <h4 className="text-center mt-3">Visión</h4>

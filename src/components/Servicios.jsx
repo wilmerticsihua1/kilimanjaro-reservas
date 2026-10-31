@@ -43,12 +43,8 @@ export default function Servicios() {
             <div className="card h-100 border-0 shadow-sm">
               <img
                 src={servicio.imagen}
-                className="card-img-top"
+                className="card-img-top galeria-img"
                 alt={servicio.titulo}
-                style={{
-                  height: '230px',
-                  objectFit: 'cover'
-                }}
                 onError={(e) => {
                   e.currentTarget.style.display = 'none'
                 }}
@@ -83,7 +79,7 @@ export default function Servicios() {
           que más quieres.
         </p>
 
-        <Link to="/reservas" className="btn btn-warning btn-lg fw-semibold">
+        <Link to="/reservar" className="btn btn-warning btn-lg fw-semibold">
           Reserva tu mesa
         </Link>
       </div>

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { seedReservations, makeReservation } from '../data/seed'
 import { findConflict, isDuplicate } from '../data/reservationLogic'
 
-const STORAGE_KEY = 'restaurant-reservations-v1'
+const STORAGE_KEY = 'restaurant-reservations-v2'
 
 const loadInitial = () => {
   try {
@@ -12,7 +12,7 @@ const loadInitial = () => {
       if (Array.isArray(parsed)) return parsed
     }
   } catch {
-    localStorage.removeItem(STORAGE_KEY)
+    try { localStorage.removeItem(STORAGE_KEY) } catch { /* sin almacenamiento */ }
   }
   return seedReservations
 }
@@ -22,7 +22,11 @@ export function useReservations() {
   const [error, setError] = useState(null)
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(reservations))
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(reservations))
+    } catch {
+      // almacenamiento no disponible
+    }
   }, [reservations])
 
   const addReservation = (draft) => {
@@ -30,9 +34,13 @@ export function useReservations() {
       setError('Ya existe una reserva con el mismo nombre, teléfono, fecha y hora. Evitamos duplicados.')
       return { ok: false, reason: 'duplicate' }
     }
-    const conflict = findConflict(reservations, draft)
+  const conflict = findConflict(reservations, draft)
+
     if (conflict) {
-      setError(`La mesa ${draft.tableId} ya está reservada a las ${conflict.time} para ${conflict.clientName}. Elija otra mesa u horario.`)
+      setError(
+        `¡Mesa no disponible! La mesa ${draft.tableId} ya está reservada para las ${conflict.time}. Por favor, elige otra mesa u horario.`
+      )
+
       return { ok: false, reason: 'conflict' }
     }
     const created = makeReservation(draft)

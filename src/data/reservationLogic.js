@@ -1,9 +1,13 @@
 export const HOURS = [
-  '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00',
-  '19:00', '19:30', '20:00', '20:30', '21:00', '21:30', '22:00',
-]
+  '12:00', '12:30', '13:00',
+  '19:00', '19:30', '20:00',
+];
 
-export const DURATION_MINUTES = 90
+// Tiempo que el cliente puede ocupar la mesa
+export const DURATION_MINUTES = 120;
+
+// Tiempo para limpiar y preparar la mesa
+export const CLEANING_MINUTES = 15;
 
 export const tables = [
   { id: 1, capacity: 2, zone: 'Interior' },
@@ -32,17 +36,31 @@ export const intervalsOverlap = (startA, endA, startB, endB) => {
   return toMinutes(startA) < toMinutes(endB) && toMinutes(startB) < toMinutes(endA)
 }
 
-export const findConflict = (reservations, { date, time, tableId, duration = DURATION_MINUTES }, excludeId = null) => {
-  const end = addMinutes(time, duration)
-  return reservations.find(
-    (r) =>
-      r.id !== excludeId &&
-      r.status !== 'cancelled' &&
-      r.date === date &&
-      Number(r.tableId) === Number(tableId) &&
-      intervalsOverlap(time, end, r.time, addMinutes(r.time, r.duration ?? DURATION_MINUTES))
-  )
-}
+export const findConflict = (
+  reservations,
+  { date, time, tableId, duration = DURATION_MINUTES },
+  excludeId = null
+) => {
+  const startA = toMinutes(time);
+  const endA = startA + duration + CLEANING_MINUTES;
+
+  return reservations.find((r) => {
+    if (
+      r.id === excludeId ||
+      r.status === 'cancelled' ||
+      r.date !== date ||
+      Number(r.tableId) !== Number(tableId)
+    ) {
+      return false;
+    }
+
+    const startB = toMinutes(r.time);
+    const endB =
+      startB + (r.duration ?? DURATION_MINUTES) + CLEANING_MINUTES;
+
+    return startA < endB && startB < endA;
+  });
+};
 
 export const isDuplicate = (reservations, draft, excludeId = null) => {
   const name = draft.clientName.trim().toLowerCase()
@@ -58,8 +76,8 @@ export const isDuplicate = (reservations, draft, excludeId = null) => {
   )
 }
 
-export const availableTables = (reservations, date, time, duration = DURATION_MINUTES, guests = 1, excludeId = null) => {
-  return tables.filter(
+export const availableTables = (reservations, date, time, duration = DURATION_MINUTES, guests = 1, excludeId = null, mesas = tables) => {
+  return mesas.filter(
     (t) =>
       t.capacity >= guests && !findConflict(reservations, { date, time, tableId: t.id, duration }, excludeId)
   )
@@ -96,4 +114,4 @@ export const nextDays = (count = 7) => {
   })
 }
 
-export const statusLabel = { confirmed: 'Confirmada', seated: 'En mesa', cancelled: 'Cancelada', completed: 'Finalizada' }
+export const statusLabel = { pending: 'Pendiente', confirmed: 'Confirmada', seated: 'En mesa', cancelled: 'Cancelada', completed: 'Finalizada' }
